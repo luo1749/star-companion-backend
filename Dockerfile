@@ -1,8 +1,5 @@
 FROM node:18
 
-# Set working directory
-WORKDIR /app/backend
-
 # Copy package files
 COPY ./backend/package.json .
 COPY ./backend/package-lock.json .
@@ -26,5 +23,5 @@ RUN ls -la && test -f server.js && echo "✅ server.js found" || echo "❌ serve
 # Expose port
 EXPOSE 3000
 
-# Start service -
-CMD ["node", "server.js"]
+# Start service - 
+CMD ["node", "/app/backend/server.js"]
