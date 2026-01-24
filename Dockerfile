@@ -24,4 +24,4 @@ RUN ls -la && test -f server.js && echo "✅ server.js found" || echo "❌ serve
 EXPOSE 3000
 
 # Start service - 
-CMD ["node", "/app/backend/server.js"]
+CMD ["node", "server.js"]
