@@ -1,8 +1,5 @@
-# 使用 Ubuntu 22.04 作为基础镜像
-FROM ubuntu:22.04
-
-# 安装 Node.js 和 npm
-RUN apt-get update && apt-get install -y nodejs npm
+# 使用官方 Node.js 18 镜像，自带 npm
+FROM node:18
 
 # 设置工作目录
 WORKDIR /app
@@ -10,7 +7,11 @@ WORKDIR /app
 # 复制项目文件
 COPY . .
 
-# 安装依赖并启动服务
+# 进入后端目录并安装依赖
 RUN cd backend && npm install
+
+# 暴露端口
 EXPOSE 3000
+
+# 启动服务
 CMD ["node", "backend/server.js"]
