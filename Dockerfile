@@ -17,4 +17,4 @@ COPY ./backend/ .
 EXPOSE 3000
 
 # Start service 
-CMD ["node", "server.js"]
+CMD ["sh", "-c", "node server.js"]
