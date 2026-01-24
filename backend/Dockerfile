@@ -3,7 +3,7 @@ FROM node:18
 # 设置工作目录
 WORKDIR /app
 
-# 复制后端的 package.json 和 package-lock.json
+# 复制后端目录的 package.json 和 package-lock.json
 COPY backend/package.json .
 COPY backend/package-lock.json .
 
