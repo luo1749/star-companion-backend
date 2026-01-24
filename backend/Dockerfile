@@ -1,4 +1,4 @@
-# 选择 Node.js 18 + Ubuntu 镜像，自带 npm，兼容你的现有环境
+# 使用 Node.js 18 + Ubuntu 镜像，自带 npm，兼容现有环境
 FROM node:18-ubuntu
 
 # 设置容器内的工作目录
@@ -10,8 +10,8 @@ COPY . .
 # 进入后端目录并安装依赖
 RUN cd backend && npm install
 
-# 暴露后端服务的端口（根据你的实际配置修改，如 3000）
+# 暴露后端服务的端口（与项目配置一致）
 EXPOSE 3000
 
-# 启动后端服务（替换为你的实际入口文件路径）
+# 启动后端服务（入口文件路径与项目一致）
 CMD ["node", "backend/server.js"]
