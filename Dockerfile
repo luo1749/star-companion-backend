@@ -1,8 +1,5 @@
-# 选择 Node.js 18 官方镜像（Alpine 版本更小、更稳定）
-FROM node:18-alpine
-
-# 安装基础依赖（解决 Alpine 系统可能的依赖缺失）
-RUN apk add --no-cache git
+# 选择 Node.js 18 官方镜像（不使用 Alpine，避免特权依赖）
+FROM node:18
 
 # 设置容器工作目录
 WORKDIR /app
@@ -10,7 +7,7 @@ WORKDIR /app
 # 复制本地 app/backend 下的依赖文件
 COPY ./app/backend/package.json ./app/backend/package-lock.json ./
 
-# 清空 npm 缓存 + 切换国内源 + 强制重新安装依赖（无缓存）
+# 清空缓存 + 切换国内源 + 安装依赖（无特权操作）
 RUN npm cache clean --force && \
     npm config set registry https://registry.npmmirror.com && \
     npm install --legacy-peer-deps --no-cache-dir
