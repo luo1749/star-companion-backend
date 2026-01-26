@@ -1,21 +1,11 @@
 FROM node:18
-
-# 设置容器工作目录
-WORKDIR /app
-
-# 复制本地 app/backend 下的依赖文件
+# 直接将工作目录设为/app/backend，与本地路径一致
+WORKDIR /app/backend
+# 复制本地app/backend下的依赖文件到当前工作目录
 COPY ./app/backend/package.json ./app/backend/package-lock.json ./
-
-# 清空缓存 + 切换国内源 + 安装依赖（无特权操作）
-RUN npm cache clean --force && \
-    npm config set registry https://registry.npmmirror.com && \
-    npm install --legacy-peer-deps --no-cache-dir
-
-# 复制本地 app/backend 目录的所有代码
+# 安装依赖
+RUN npm config set registry https://registry.npmmirror.com && npm install --legacy-peer-deps
+# 复制本地app/backend的所有代码到当前工作目录
 COPY ./app/backend/ ./
-
-# 验证文件是否存在（调试用）
-RUN ls -la /app
-
-# 启动服务（指定绝对路径）
-CMD ["node", "/app/server.js"]
+# 启动服务（当前工作目录下的server.js）
+CMD ["node", "server.js"]
