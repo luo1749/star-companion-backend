@@ -1,15 +1,21 @@
-# 选择 Node.js 18 官方镜像（自带 npm）
+# 选择 Node.js 18 官方镜像
 FROM node:18
 
+# 设置容器工作目录
 WORKDIR /app
 
-# 先复制依赖文件，利用 Docker 缓存
-COPY ./backend/package.json ./backend/package-lock.json ./
-# 切换国内镜像源并安装依赖
-RUN npm config set registry https://registry.npmmirror.com && npm install --legacy-peer-deps
+# 复制 app/backend 下的依赖文件
+COPY app/backend/package.json app/backend/package-lock.json ./
 
-# 复制项目代码
-COPY ./backend/ .
+# 安装依赖
+RUN npm config set registry https://registry.npmmirror.com && \
+    npm install --legacy-peer-deps
 
-# 启动服务
-CMD ["node", "server.js"]
+# 复制 app/backend 目录的所有代码
+COPY app/backend/ ./
+
+# 验证文件是否存在（调试用）
+RUN ls -la /app
+
+# 启动服务（指定绝对路径）
+CMD ["node", "/app/server.js"]
