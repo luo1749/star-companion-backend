@@ -1,15 +1,16 @@
 <template>
+  <!-- 路由出口：登录页、仪表盘都会在这里渲染 -->
   <router-view />
 </template>
 
 <script>
 export default {
   name: 'App'
-};
+}
 </script>
 
 <style>
-/* 全局样式 */
+/* 全局样式重置，适配登录页和后台页面 */
 * {
   margin: 0;
   padding: 0;
@@ -17,43 +18,11 @@ export default {
 }
 
 body {
-  font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
-  background: #f5f7fa;
-  color: #333;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  min-height: 100vh;
 }
 
-/* 滚动条样式 */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+#app {
+  min-height: 100vh;
 }
-
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
-}
-
-/* 通用工具类 */
-.text-center { text-align: center; }
-.text-right { text-align: right; }
-.mt-1 { margin-top: 0.5rem; }
-.mt-2 { margin-top: 1rem; }
-.mt-3 { margin-top: 1.5rem; }
-.mb-1 { margin-bottom: 0.5rem; }
-.mb-2 { margin-bottom: 1rem; }
-.mb-3 { margin-bottom: 1.5rem; }
-.ml-1 { margin-left: 0.5rem; }
-.mr-1 { margin-right: 0.5rem; }
-.p-1 { padding: 0.5rem; }
-.p-2 { padding: 1rem; }
-.p-3 { padding: 1.5rem; }
 </style>

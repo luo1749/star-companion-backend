@@ -1,62 +1,41 @@
-const mysql = require('mysql2/promise');
-require('dotenv').config();
+// 纯内存模拟数据库，零依赖
+const dbData = {
+  test: []
+};
 
-const pool = mysql.createPool({
-    host: process.env.DB_HOST || 'localhost',
-    port: process.env.DB_PORT || 3306,
-    user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASSWORD || '123456',
-    database: process.env.DB_NAME || 'star_companion',
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0,
-    enableKeepAlive: true,
-    keepAliveInitialDelay: 0
-});
-
-// 测试数据库连接
-async function testConnection() {
-    try {
-        const connection = await pool.getConnection();
-        console.log('✅ 数据库连接成功');
-        connection.release();
-        return true;
-    } catch (error) {
-        console.error('❌ 数据库连接失败:', error.message);
-        return false;
-    }
+// 测试连接
+function testConnection() {
+  console.log('✅ 内存数据库连接成功');
+  return true;
 }
 
 // 通用查询方法
-async function query(sql, params = []) {
-    try {
-        const [rows] = await pool.execute(sql, params);
-        return rows;
-    } catch (error) {
-        console.error('数据库查询错误:', error);
-        throw error;
-    }
+function query(table, params = {}) {
+  let data = dbData[table] || [];
+  if (params.where) {
+    data = data.filter(item => {
+      for (const key in params.where) {
+        if (item[key] !== params.where[key]) return false;
+      }
+      return true;
+    });
+  }
+  return data;
 }
 
-// 事务处理
-async function transaction(callback) {
-    const connection = await pool.getConnection();
-    try {
-        await connection.beginTransaction();
-        const result = await callback(connection);
-        await connection.commit();
-        return result;
-    } catch (error) {
-        await connection.rollback();
-        throw error;
-    } finally {
-        connection.release();
-    }
+// 通用插入方法
+function insert(table, data) {
+  if (!dbData[table]) dbData[table] = [];
+  dbData[table].push(data);
+  return data;
 }
 
 module.exports = {
-    pool,
-    query,
-    transaction,
-    testConnection
+  db: dbData,
+  query,
+  insert,
+  testConnection
 };
+
+// 调用测试
+testConnection();

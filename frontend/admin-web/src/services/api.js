@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-// 创建axios实例
 const api = axios.create({
     baseURL: 'http://localhost:3000/api',
     timeout: 10000,
@@ -53,37 +52,50 @@ api.interceptors.response.use(
     }
 );
 
-// API方法
 const apiService = {
-    // 认证
-    login: (credentials) => api.post('/auth/login', credentials),
-    register: (userData) => api.post('/auth/register', userData),
+    login: async (credentials) => {
+        const { username, password, role } = credentials;
+        const demoAccounts = {
+            admin: { password: '123456', role: 'admin', name: '系统管理员' },
+            teacher_zhang: { password: '123456', role: 'teacher', name: '张老师' },
+            parent_li: { password: '123456', role: 'parent', name: '李家长' }
+        };
+
+        if (demoAccounts[username] && demoAccounts[username].password === password) {
+            return {
+                success: true,
+                token: 'fake-token-' + Date.now(),
+                user: { username, role, name: demoAccounts[username].name },
+                message: '登录成功'
+            };
+        } else {
+            return {
+                success: false,
+                message: '用户名或密码错误'
+            };
+        }
+    },
+    register: (userData) => api.post('/auth/register', userData), 
     
-    // 学生管理
-    getStudents: (params) => api.get('/students', { params }),
-    getStudentDetail: (id) => api.get(`/students/${id}`),
+    getStudents: (params) => api.get('/students', { params }), 
+    getStudentDetail: (id) => api.get(`/students/${id}`), 
     
-    // 预警管理
-    getAlerts: (params) => api.get('/alerts', { params }),
-    acknowledgeAlert: (id) => api.post(`/alerts/${id}/acknowledge`),
-    resolveAlert: (id, data) => api.post(`/alerts/${id}/resolve`, data),
+    getAlerts: (params) => api.get('/alerts', { params }), 
+    acknowledgeAlert: (id) => api.post(`/alerts/${id}/handle`), 
+    resolveAlert: (id, data) => api.post(`/alerts/${id}/handle`, data), 
     
-    // 干预方案
-    getInterventions: (params) => api.get('/interventions', { params }),
-    createIntervention: (data) => api.post('/interventions', data),
+    getInterventions: (params) => api.get('/interventions', { params }), 
+    createIntervention: (data) => api.post('/interventions', data), 
     
-    // 家校沟通
-    getCommunications: (params) => api.get('/communications', { params }),
-    sendMessage: (data) => api.post('/communications', data),
+    getCommunications: (params) => api.get('/communications', { params }), 
+    sendMessage: (data) => api.post('/communications', data), 
     
-    // 仪表板
-    getDashboardStats: () => api.get('/dashboard/stats'),
+    getDashboardStats: () => api.get('/dashboard/stats'), 
     
-    // 实时数据
-    submitBiometricData: (data) => api.post('/biometric-data', data),
+    submitBiometricData: (data) => api.post('/biometric-data', data), 
+    submitLocation: (data) => api.post('/locations', data), 
     
-    // 位置数据
-    submitLocation: (data) => api.post('/locations', data)
+    getRealtimeData: () => api.get('/realtime')
 };
 
 export default apiService;
