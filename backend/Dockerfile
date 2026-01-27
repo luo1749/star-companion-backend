@@ -1,20 +1,17 @@
+# 基础镜像（保留node:18即可，alpine更轻量化，可选）
 FROM node:18
 
-# Set working directory
-WORKDIR /app
+# 工作目录：容器内的目录，和本地backend对应
+WORKDIR /app/backend
 
-# Copy package files to leverage Docker cache
-COPY backend/package.json .
-COPY backend/package-lock.json .
+# 复制依赖文件：Dockerfile在backend文件夹里，所以本地路径直接写./（当前目录）
+COPY package.json package-lock.json ./
 
-# Use domestic npm registry and install dependencies
-RUN npm config set registry https://registry.npmmirror.com && npm install --legacy-peer-deps --unsafe-perm
+# 配置国内镜像+安装依赖（解决下载失败）
+RUN npm config set registry https://registry.npmmirror.com && npm install --legacy-peer-deps
 
-# Copy the rest of the project
-COPY . .
+# 复制所有代码：同样因为Dockerfile在backend里，本地路径写./即可
+COPY ./ ./
 
-# Expose service port
-EXPOSE 3000
-
-# Start the service
-CMD ["node", "backend/server.js"]
+# 启动服务（容器内/app/backend下的server.js）
+CMD ["node", "server.js"]

@@ -1,0 +1,10 @@
+# 前端依赖与临时文件
+node_modules/
+frontend/admin-web/node_modules/vite/deps_temp/
+
+# Docker 相关（可选）
+Dockerfile~
+.dockerignore
+
+# JDK 文件（如果不需要提交）
+oracleJdk-25/
