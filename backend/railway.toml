@@ -1,0 +1,12 @@
+[build]
+builder = "nixpacks"
+builderSettings = { buildCommand = "npm install" }
+
+[deploy]
+startCommand = "node server.js"
+healthcheckPath = "/health"
+restartPolicyType = "ON_FAILURE"
+
+[variables]
+NODE_ENV = "production"
+PORT = "3000"
