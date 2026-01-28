@@ -2,6 +2,10 @@
   "name": "star-companion-admin-web",
   "version": "1.0.0",
   "private": true,
+  "engines": {
+    "node": "25.x",
+    "npm": "10.x"
+  },
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build --no-lint",
