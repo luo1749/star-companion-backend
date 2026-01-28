@@ -1,5 +1,7 @@
 FROM node:18-alpine
 
+RUN apk add --no-cache curl
+
 WORKDIR /app/backend
 
 COPY app/backend/package.json ./
@@ -9,6 +11,9 @@ RUN npm config set registry https://registry.npmmirror.com && \
 
 COPY app/backend ./
 
-EXPOSE 3000
+EXPOSE ${PORT:-3000}
 
-CMD ["node", "server.js"]
+HEALTHCHECK --interval=10s --timeout=5s --retries=3 \
+  CMD curl -f http://localhost:${PORT:-3000}/health || exit 1
+
+CMD ["sh", "-c", "node server.js"]
