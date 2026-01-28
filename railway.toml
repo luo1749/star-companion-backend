@@ -1,0 +1,13 @@
+[build]
+builder = "nixpacks"
+builderSettings = { buildCommand = "npm install --legacy-peer-deps --unsafe-perm" }
+
+[deploy]
+startCommand = "node server.js"
+healthcheckPath = "/health"
+healthcheckTimeout = 30
+restartPolicyType = "ON_FAILURE"
+startupTimeout = 60
+
+[variables]
+NODE_ENV = "production"
