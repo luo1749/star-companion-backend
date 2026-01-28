@@ -50,11 +50,29 @@ const checkRole = (roles) => (req, res, next) => {
 // ====================== 模拟器相关代码结束 ======================
 
 const app = express();
-const PORT = 3000;
+// 🔥 关键修改1：使用Railway的环境变量端口，而非固定端口
+const PORT = process.env.PORT || 3000;
 
 // 中间件
 app.use(cors());
 app.use(bodyParser.json());
+
+// 🔥 关键修改2：添加健康检查接口（适配Railway的健康检查）
+// 支持 /health（英文）和 /健康（中文）两种路径，确保兼容性
+app.get('/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'healthy',
+    timestamp: new Date().toISOString(),
+    port: PORT
+  });
+});
+app.get('/健康', (req, res) => {
+  res.status(200).json({ 
+    status: 'healthy',
+    timestamp: new Date().toISOString(),
+    port: PORT
+  });
+});
 
 // 模拟数据库（扩展字段，支持更多生物特征）
 let students = [
@@ -576,25 +594,27 @@ function broadcastToStudent(studentId, message) {
 }
 
 // 4. 新增：启动HTTP服务器（替代原有的app.listen）
+// 🔥 关键修改3：优化启动日志，输出Railway的实际端口
 server.listen(PORT, () => {
   console.log('🚀 星伴后端服务器已启动（含WebSocket+模拟器支持）');
-  console.log(`📡 HTTP地址：http://localhost:${PORT}`);
-  console.log(`🔌 WebSocket地址：ws://localhost:${PORT}`);
+  console.log(`📡 HTTP地址：http://0.0.0.0:${PORT}`); // 改为0.0.0.0适配容器环境
+  console.log(`🔌 WebSocket地址：ws://0.0.0.0:${PORT}`);
+  console.log(`❤️ 健康检查地址：http://0.0.0.0:${PORT}/health`);
   console.log('📋 可用接口（已添加/api前缀）：');
-  console.log(`  主页：http://localhost:${PORT}/api`);
-  console.log(`  学生列表：http://localhost:${PORT}/api/students`);
-  console.log(`  预警列表：http://localhost:${PORT}/api/alerts`);
-  console.log(`  心率提交：POST http://localhost:${PORT}/api/heartrate`);
-  console.log(`  生物特征提交：POST http://localhost:${PORT}/api/biometric-data`);
-  console.log(`  实时数据：http://localhost:${PORT}/api/realtime`);
+  console.log(`  主页：http://0.0.0.0:${PORT}/api`);
+  console.log(`  学生列表：http://0.0.0.0:${PORT}/api/students`);
+  console.log(`  预警列表：http://0.0.0.0:${PORT}/api/alerts`);
+  console.log(`  心率提交：POST http://0.0.0.0:${PORT}/api/heartrate`);
+  console.log(`  生物特征提交：POST http://0.0.0.0:${PORT}/api/biometric-data`);
+  console.log(`  实时数据：http://0.0.0.0:${PORT}/api/realtime`);
   // 新增模拟器接口说明
-  console.log(`  模拟器启动：POST http://localhost:${PORT}/api/simulator/start`);
-  console.log(`  模拟器停止：POST http://localhost:${PORT}/api/simulator/stop`);
+  console.log(`  模拟器启动：POST http://0.0.0.0:${PORT}/api/simulator/start`);
+  console.log(`  模拟器停止：POST http://0.0.0.0:${PORT}/api/simulator/stop`);
   console.log('\n💡 测试生物特征接口示例：');
-  console.log('  POST http://localhost:3000/api/biometric-data');
+  console.log(`  POST http://0.0.0.0:${PORT}/api/biometric-data`);
   console.log('  Body: {"device_id":"dev001","student_id":1,"heart_rate":125,"temperature":37.6}');
   console.log('\n💡 WebSocket测试示例：');
-  console.log('  ws://localhost:3000?token=test&studentId=1');
+  console.log(`  ws://0.0.0.0:${PORT}?token=test&studentId=1`);
 });
 
 // 导出广播函数（可选）
